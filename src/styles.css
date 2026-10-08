@@ -1,4 +1,8 @@
-@import "tailwindcss";
+/* source(none) + @source keeps the SSR and client builds on the same
+   file set. Without it, the SSR module graph invents extra utilities,
+   the CSS hash changes, and the HTML stylesheet link 404s in production. */
+@import "tailwindcss" source(none);
+@source ".";
 
 @theme {
   --color-bg: #0b0c0e;
