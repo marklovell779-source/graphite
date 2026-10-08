@@ -1,0 +1,12 @@
+node_modules
+dist
+.netlify
+.output
+.nitro
+.grok
+artifacts
+screenshots
+*.log
+.env
+.env.*
+.DS_Store

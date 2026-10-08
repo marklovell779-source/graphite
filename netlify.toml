@@ -1,0 +1,8 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Nitro reads this and switches off the Vercel preset (see vite.config.ts).
+  NETLIFY = "true"
