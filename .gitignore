@@ -3,6 +3,7 @@ dist
 .netlify
 .output
 .nitro
+.vercel
 .grok
 artifacts
 screenshots
@@ -10,3 +11,5 @@ screenshots
 .env
 .env.*
 .DS_Store
+.project_id
+.node_modules.lock
