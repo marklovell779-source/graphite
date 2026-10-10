@@ -2,6 +2,7 @@ import { uid } from "@/lib/utils";
 import type { CadDocument, CadFeature, FeaturePatch } from "./types";
 import { PARAM_META } from "./types";
 import { TEMPLATES } from "./templates";
+import { decideYield, trustOfUtterance } from "./trust";
 
 const BOX_RE =
   /(\d+(?:\.\d+)?)\s*(?:mm|in)?\s*[x×*]+\s*(\d+(?:\.\d+)?)\s*(?:mm|in)?\s*[x×*]+\s*(\d+(?:\.\d+)?)/i;
@@ -122,6 +123,7 @@ function wrap(
     media,
     pipelineNote: `Speech-to-intent · “${source.slice(0, 80)}”`,
     confidence: 0.55,
+    trust: trustOfUtterance(source),
     notes: "Parsed from language, not a drawing. Confirm every number.",
     sourceLabel: "Spoken description",
     features,
@@ -254,8 +256,18 @@ export function applyThickness(doc: CadDocument, height: number): CadDocument {
 export function applySpokenDims(doc: CadDocument, note: string): CadDocument {
   const raw = note.trim();
   if (!raw) return doc;
+  const decision = decideYield(doc.trust ?? "guesswork", trustOfUtterance(raw));
+  if (decision.yielded) {
+    return {
+      ...doc,
+      trust: "knowing",
+      pipelineNote: `${doc.pipelineNote} · yielded`,
+      notes: `${doc.notes} ${decision.reason}`.trim(),
+    };
+  }
   let next: CadDocument = {
     ...doc,
+    trust: decision.trust,
     features: doc.features.map((f) => ({ ...f, params: { ...f.params }, position: { ...f.position } })),
     pipelineNote: `${doc.pipelineNote} · note: “${raw.slice(0, 80)}”`,
     notes: `${doc.notes} Typed/spoken: “${raw}”.`.trim(),
@@ -272,6 +284,7 @@ export function applySpokenDims(doc: CadDocument, note: string): CadDocument {
       pipelineNote: `${next.pipelineNote} · matched “${named.name}” from the note`,
       notes: `${named.notes} Identity from the note, confirm the sketch still matches.`,
       confidence: Math.min(1, Math.max(next.confidence, named.confidence) + 0.08),
+      trust: decision.trust,
     };
   }
 

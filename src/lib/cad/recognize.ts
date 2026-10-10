@@ -120,6 +120,7 @@ export function recognizeStrokes(
     media: "gesture",
     pipelineNote: "Live sketch. No closed profile — defaulting to a 40 mm plate.",
     confidence: 0.35,
+    trust: "guesswork",
     notes: "Draw a closed outline for a better fit.",
     features: [
       {
@@ -248,6 +249,7 @@ export function recognizeStrokes(
     media: "gesture",
     pipelineNote: `Hand sketch · ${roundNice(length)} × ${roundNice(width)} mm outline · ${holes.length} interior cut${holes.length === 1 ? "" : "s"}.`,
     confidence: holes.length ? 0.62 : 0.5,
+    trust: "guesswork",
     notes: "Thickness is not in the drawing. Default 4 mm until you confirm.",
     sourceLabel: "Hand sketch",
     features,

@@ -112,6 +112,7 @@ function bracketDoc(): CadDocument {
     media: "graph-paper",
     pipelineNote: "5 mm grid on engineering paper. Legs read 80 × 50, upright 40, stock 3 mm.",
     confidence: 0.74,
+    trust: "guesswork",
     notes:
       "Assumed 3 mm aluminum sheet. Hole diameters unlabeled — treating as M4 clearance (Ø5).",
     sourceLabel: "Graph paper sketch",
@@ -185,6 +186,7 @@ function standDoc(): CadDocument {
     pipelineNote:
       "Napkin sketch, no grid. Perspective corrected. Wedge profile with a catch slot.",
     confidence: 0.61,
+    trust: "guesswork",
     notes: "Proportions inferred from a typical 6-inch phone. Angle ~40° from the wedge.",
     sourceLabel: "Napkin sketch",
     features: [
@@ -238,6 +240,7 @@ function enclosureDoc(): CadDocument {
     media: "whiteboard",
     pipelineNote: "Whiteboard isometric. 120 × 80 × 40 box, four lid screws, USB cutout on a short wall.",
     confidence: 0.69,
+    trust: "guesswork",
     notes: "3 mm walls. Interior pocket leaves a floor and a lid. USB on the +Z wall.",
     sourceLabel: "Whiteboard sketch",
     features: [
@@ -327,6 +330,7 @@ function bushingDoc(): CadDocument {
     media: "coaster",
     pipelineNote: "Coaster sketch. Two concentric circles and a side view. OD 20, ID 8, height 12.",
     confidence: 0.86,
+    trust: "guesswork",
     notes: "Through-bore. No chamfer drawn — asking before adding.",
     sourceLabel: "Coaster sketch",
     features: [

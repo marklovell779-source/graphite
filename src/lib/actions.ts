@@ -1,5 +1,6 @@
 import { interpretSketch } from "@/lib/ai/interpret";
 import { parseIntent, applySpokenDims } from "@/lib/cad/intent";
+import { decideYield, trustOfUtterance } from "@/lib/cad/trust";
 import {
   canvasToJpeg,
   classifyCanvas,
@@ -137,8 +138,9 @@ export async function ingestImage(file: Blob, sourceLabel = "Uploaded sketch", n
             : fallback.notes;
           fallback.media = guess.media;
           fallback.sourceLabel = sourceLabel;
+          const doc = caption ? applySpokenDims(fallback, caption) : fallback;
           return {
-            doc: fallback,
+            doc,
             thumb: jpeg,
             message: result.unavailable
               ? "Vision is unavailable. I used the written dimensions on a generic plate — confirm them."
@@ -149,7 +151,9 @@ export async function ingestImage(file: Blob, sourceLabel = "Uploaded sketch", n
       }
       result.doc.sourceLabel = sourceLabel;
       result.doc.media = guess.media;
-      return { doc: result.doc, thumb: jpeg, message: result.assistantMessage };
+      result.doc.trust = "guesswork";
+      const doc = caption ? applySpokenDims(result.doc, caption) : result.doc;
+      return { doc, thumb: jpeg, message: result.assistantMessage };
     },
   );
 }
@@ -199,7 +203,8 @@ export async function ingestText(text: string, media: MediaKind = "describe") {
       if (result.ok) {
         result.doc.media = media;
         result.doc.sourceLabel = media === "voice" ? "Spoken description" : "Written description";
-        return { doc: result.doc, thumb: null, message: result.assistantMessage };
+        result.doc.trust = "guesswork";
+        return { doc: applySpokenDims(result.doc, text), thumb: null, message: result.assistantMessage };
       }
       const local = parseIntent(text);
       if (local) {
@@ -223,6 +228,11 @@ export async function refineChat(text: string) {
   addMessage({ role: "user", text });
   if (!doc) {
     await ingestText(text, "describe");
+    return;
+  }
+  const decision = decideYield(doc.trust ?? "guesswork", trustOfUtterance(text));
+  if (decision.yielded) {
+    addMessage({ role: "assistant", text: decision.reason });
     return;
   }
   setBusy(true);
@@ -255,5 +265,7 @@ export async function refineChat(text: string) {
     });
     return;
   }
-  loadDoc(result.doc, { message: result.assistantMessage });
+  loadDoc(applySpokenDims({ ...result.doc, id: doc.id, trust: doc.trust }, text), {
+    message: result.assistantMessage,
+  });
 }

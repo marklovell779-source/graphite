@@ -86,6 +86,8 @@ export type CadDocument = {
   features: CadFeature[];
   questions: ClarifyingQuestion[];
   confidence: number;
+  /** Knowing once the user stated a number. Guesswork while the solid is only inferred. */
+  trust: Trust;
   notes: string;
   sourceLabel?: string;
 };
@@ -98,6 +100,8 @@ export type ChatMessage = {
 };
 
 export type Phase = "intake" | "recognize" | "refine";
+
+export type Trust = "knowing" | "guesswork";
 
 export const PARAM_META: Record<
   FeatureKind,

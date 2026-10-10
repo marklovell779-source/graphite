@@ -176,6 +176,7 @@ function sanitizeDoc(raw: unknown, fallback?: CadDocument): { doc: CadDocument; 
     media,
     pipelineNote: typeof o.pipelineNote === "string" ? o.pipelineNote : fallback?.pipelineNote ?? "",
     confidence: Math.max(0, Math.min(1, asNum(o.confidence, fallback?.confidence ?? 0.5))),
+    trust: fallback?.trust ?? "guesswork",
     notes: typeof o.notes === "string" ? o.notes : fallback?.notes ?? "",
     sourceLabel: fallback?.sourceLabel,
     features: features.length ? features : fallback?.features ?? [],
