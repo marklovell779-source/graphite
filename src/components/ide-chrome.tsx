@@ -31,6 +31,7 @@ import {
   MenuShortcut,
 } from "@/components/ui/dropdown-menu";
 import { collectIssues } from "@/lib/cad/issues";
+import { confidenceBadge } from "@/lib/cad/trust";
 import { measureDoc } from "@/lib/cad/geometry";
 import { MATERIALS, PRINTERS, printerById, type MaterialId } from "@/lib/cad/printers";
 import { formatDuration } from "@/lib/cad/slicer";
@@ -593,6 +594,11 @@ export function StatusBar() {
         </button>
       ) : null}
       <span className="ml-auto" />
+      {doc ? (
+        <span className="px-2" title={confidenceBadge(doc).title}>
+          {confidenceBadge(doc).label} {confidenceBadge(doc).percent}%
+        </span>
+      ) : null}
       {measure && doc ? (
         <span className="px-2 tabular-nums">
           {measure.size.x.toFixed(1)} × {measure.size.z.toFixed(1)} × {measure.size.y.toFixed(1)} {doc.units}

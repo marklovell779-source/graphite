@@ -271,6 +271,7 @@ export const useApp = create<AppState>((set, get) => ({
     if (!doc) return;
     const next = {
       ...doc,
+      trust: "knowing" as const,
       features: doc.features.map((f) =>
         f.id === featureId ? { ...f, params: { ...f.params, [key]: value } } : f,
       ),
@@ -295,6 +296,7 @@ export const useApp = create<AppState>((set, get) => ({
         q.id === questionId ? { ...q, answered: reply } : q,
       ),
       confidence: Math.min(1, next.confidence + 0.12),
+      trust: "knowing",
     };
     const messages = [
       ...get().messages.map((m) => ({

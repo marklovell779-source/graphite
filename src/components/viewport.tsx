@@ -6,6 +6,7 @@ import { LayerScrubber } from "@/components/slicer-panel";
 import { buildSolid, featureGeometry, featureMatrix, layoutParts, measureDoc } from "@/lib/cad/geometry";
 import type { LayerPaths } from "@/lib/cad/slicer";
 import type { CadDocument, CadFeature } from "@/lib/cad/types";
+import { confidenceBadge } from "@/lib/cad/trust";
 import { useApp } from "@/lib/store";
 
 function Solid({
@@ -362,6 +363,7 @@ export function Viewport() {
   useEffect(() => setMounted(true), []);
 
   const measure = doc ? measureDoc(doc) : null;
+  const badge = doc ? confidenceBadge(doc) : null;
   const unit = doc?.units ?? "mm";
   const kit = parts.length > 1;
   const slicerOpen = useApp((s) => s.slicerOpen);
@@ -407,6 +409,16 @@ export function Viewport() {
                 ))
             : null}
           <div className="pointer-events-auto flex items-center gap-1.5">
+            {badge ? (
+              <span
+                title={badge.title}
+                className={`flex h-9 items-center rounded-sm px-2.5 font-mono text-[10px] uppercase tracking-[0.14em] shadow-[var(--shadow-border)] ${
+                  badge.label === "Knowing" ? "bg-surface text-ok" : "bg-surface text-fg"
+                }`}
+              >
+                {badge.label} {badge.percent}%
+              </span>
+            ) : null}
             {kit ? (
               <button
                 type="button"
